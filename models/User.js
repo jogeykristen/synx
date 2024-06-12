@@ -18,12 +18,7 @@ const User = sequelize.define("User", {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: true, // Nullable since Google OAuth users won't have a password
-  },
-  googleId: {
-    type: DataTypes.STRING,
     allowNull: true,
-    unique: true,
   },
   role: {
     type: DataTypes.ENUM("user", "admin"),

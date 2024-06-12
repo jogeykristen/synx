@@ -15,7 +15,7 @@ const sendMessage = async (req, res) => {
 };
 
 const getMessages = async (req, res) => {
-  const userId = req.user.id; // Assuming userId is available in req.user from authentication middleware
+  const userId = req.user.id;
   try {
     const messages = await messageService.getMessages(userId);
     res.status(200).json(messages);
