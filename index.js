@@ -6,12 +6,14 @@ const userRoutes = require("./routes/userRoutes");
 const orgRoutes = require("./routes/organizationRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const meetingRoutes = require("./routes/meetingRoutes");
+const webhookRoutes = require("./routes/webhookRoutes");
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use("/webhooks", webhookRoutes);
 app.use("/user", userRoutes);
 app.use("/org", orgRoutes);
 app.use("/messages", messageRoutes);

@@ -1,6 +1,54 @@
-const { User, Organization } = require("../models/index");
+const { User, Organization, Webhook } = require("../models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
+
+// const createUser = async ({
+//   username,
+//   email,
+//   password,
+//   role,
+//   organizationName,
+// }) => {
+//   let user;
+//   let organization;
+
+//   try {
+//     const existingUser = await User.findOne({ where: { email } });
+//     if (existingUser) {
+//       throw new Error("Email already exists");
+//     }
+
+//     [organization, created] = await Organization.findOrCreate({
+//       where: { name: organizationName },
+//       defaults: { name: organizationName },
+//     });
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+//     console.log("hashed = ", hashedPassword);
+
+//     user = await User.create({
+//       username,
+//       email,
+//       password: hashedPassword,
+//       role,
+//       organizationId: organization.id,
+//     });
+
+//     return user;
+//   } catch (error) {
+//     throw new Error(error.message);
+//   }
+// };
+
+const triggerWebhooks = async (event, data) => {
+  const webhooks = await Webhook.findAll({ where: { event } });
+  webhooks.forEach((webhook) => {
+    axios.post(webhook.url, data).catch((err) => {
+      console.error(`Error triggering webhook at ${webhook.url}:`, err.message);
+    });
+  });
+};
 
 const createUser = async ({
   username,
@@ -24,7 +72,6 @@ const createUser = async ({
     });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("hashed = ", hashedPassword);
 
     user = await User.create({
       username,
@@ -33,6 +80,8 @@ const createUser = async ({
       role,
       organizationId: organization.id,
     });
+
+    await triggerWebhooks("user_created", user);
 
     return user;
   } catch (error) {

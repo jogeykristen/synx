@@ -3,6 +3,7 @@ const User = require("./User");
 const Message = require("./Message");
 const Meeting = require("./Meetings");
 const Organization = require("./Organization");
+const Webhook = require("./webhook");
 
 User.belongsTo(Organization, { foreignKey: "organizationId" });
 Organization.hasMany(User, { foreignKey: "organizationId" });
@@ -23,4 +24,5 @@ module.exports = {
   Message,
   Meeting,
   Organization,
+  Webhook,
 };
